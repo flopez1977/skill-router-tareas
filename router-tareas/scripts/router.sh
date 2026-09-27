@@ -5,7 +5,7 @@
 # Quién decide QUÉ se reparte: Claude, con las reglas de SKILL.md. Este script solo
 # ejecuta, aísla y apunta. Claude revisa SIEMPRE el resultado antes de aceptarlo.
 #
-#   router.sh init                               # crea ~/.router-tareas con la config por defecto
+#   router.sh init [codex,glm|codex|glm|ninguno] # crea ~/.router-tareas; activa solo los motores que tengas
 #   router.sh estado
 #   router.sh lanzar <motor> <repo> <id-tarea> <fichero-prompt> [minutos-tope]
 #   router.sh veredicto <id-tarea> ok|mal "<motivo>"
@@ -81,8 +81,11 @@ cmd="${1:-estado}"; shift || true
 case "$cmd" in
 
 init)
+  # Motores con suscripción, separados por comas: "codex", "glm", "codex,glm" o "ninguno".
+  # Los que no estén en la lista quedan creados pero FUERA, para activarlos el día que se tengan.
+  CON="${1:-codex,glm}"
   mkdir -p "$TRABAJOS"
-  if [ -f "$MOTORES" ]; then echo "router: ya configurado en $HOME_R"; exit 0; fi
+  if [ -f "$MOTORES" ]; then echo "router: ya configurado en $HOME_R (router.sh activar/desactivar para cambiarlo)"; exit 0; fi
   cat > "$MOTORES" <<'EOF'
 {
   "comentario": "activo=false saca el motor del reparto. N veredictos 'mal' en la ventana lo desactivan solo. Reactivar a mano: router.sh activar <motor>.",
@@ -99,7 +102,11 @@ init)
   "desactivados": {}
 }
 EOF
-  echo "router: configurado en $HOME_R (edita motores.json para quitar o añadir motores)"
+  for m in codex glm; do
+    case ",$CON," in *",$m,"*) ;; *) cambiar_activo "$m" false "sin suscripción al configurar" ;; esac
+  done
+  echo "router: configurado en $HOME_R"
+  "$0" estado
   ;;
 
 estado)
@@ -114,6 +121,8 @@ for n, m in d["motores"].items():
     ok = sum(x["resultado"] == "ok" for x in r); mal = sum(x["resultado"] == "mal" for x in r)
     est = "ACTIVO" if m["activo"] else f"FUERA ({d['desactivados'].get(n, {}).get('motivo', '')})"
     print(f"{n:6} {est:40} últimos {dias} días: {ok} bien · {mal} mal · para: {m['para']}")
+if not any(m["activo"] for m in d["motores"].values()):
+    print("\nNingún motor activo: todas las tareas las hace Claude (el router no reparte nada).")
 EOF
   ;;
 

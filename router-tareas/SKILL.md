@@ -27,7 +27,7 @@ la tarea y terminan. Tenerlos abiertos a mano solo mezcla contextos entre tareas
 - Cambios que cruzan muchos ficheros o sin forma clara de comprobarse (sin tests ni criterio de
   aceptación verificable).
 - Repos con ficheros sensibles trackeados (`.env`, claves): el script se niega solo.
-- Datos que no deben salir a ese proveedor (ver §7).
+- Datos que no deben salir a ese proveedor (ver §8).
 
 ## 3. La regla de las 3
 
@@ -37,11 +37,29 @@ en verde o si dio más guerra de la que ahorró. **Tres `mal` en 30 días sacan 
 automáticamente.** Solo vuelve cuando el usuario lo decide (`router.sh activar <motor>`). Los
 motores se quitan o se añaden editando `~/.router-tareas/motores.json`.
 
-## 4. Cómo se hace (paso a paso, lo ejecuta Claude)
+## 4. La primera vez: pregunta qué suscripciones tiene
+
+Antes de configurar nada, **pregunta al usuario** (una sola pregunta, con opciones):
+
+> ¿Qué suscripciones tienes además de Claude? · ChatGPT (para usar Codex) · GLM Coding Plan de
+> z.ai · las dos · ninguna
+
+Según la respuesta:
+
+| Tiene | Configura con | Qué pasa |
+|---|---|---|
+| Las dos | `router.sh init codex,glm` | Reparto completo |
+| Solo ChatGPT | `router.sh init codex` | Codex recibe también lo mecánico sencillo; lo sensible sigue en Claude |
+| Solo GLM | `router.sh init glm` | GLM hace lo mecánico; la implementación con criterio la hace Claude |
+| Ninguna | `router.sh init ninguno` | El router no reparte: todo lo hace Claude. Explícale qué ganaría con cada suscripción, sin insistir |
+
+Después comprueba lo que necesita cada motor elegido (§6) antes de la primera tarea. Si más adelante
+contrata una suscripción, basta `router.sh activar <motor>`.
+
+## 5. Cómo se hace (paso a paso, lo ejecuta Claude)
 
 ```bash
 R=<ruta de esta skill>/scripts/router.sh
-$R init                                    # la primera vez
 $R estado                                  # qué motores están activos y cómo van
 ```
 
@@ -70,7 +88,7 @@ Para cada tarea que decidas repartir:
 Puedes lanzar varias tareas independientes en paralelo (cada una en su worktree), pero revisa
 y fusiona de una en una.
 
-## 5. Configuración inicial (una vez)
+## 6. Qué necesita cada motor (una vez)
 
 - **Codex:** `npm i -g @openai/codex` y `codex login` con tu cuenta de ChatGPT.
 - **GLM:** suscripción GLM Coding Plan en z.ai (el plan básico basta para trabajo mecánico) y la
@@ -79,7 +97,7 @@ y fusiona de una en una.
   así la clave nunca queda escrita en un fichero ni en el historial.
 - Requisitos: `git`, `python3`, `perl` y Claude Code.
 
-## 6. Qué dice la experiencia
+## 7. Qué dice la experiencia
 
 - En una prueba con una función y cuatro tests, **Codex** la resolvió limpia en 25 s. **GLM** también
   pasó los tests (81 s) pero con una solución peor en un caso que los tests no cubrían. Conclusión:
@@ -88,7 +106,7 @@ y fusiona de una en una.
   equivocado** y obedecer en silencio instrucciones contradictorias. Por eso la revisión es de
   Claude, siempre, y por eso se comprueba que los tests no se han tocado.
 
-## 7. Datos y privacidad
+## 8. Datos y privacidad
 
 - **ChatGPT/Codex:** desactiva en la configuración de datos de ChatGPT «Mejorar el modelo para
   todos» (y lo equivalente en Codex) si no quieres que se entrene con tu código.
