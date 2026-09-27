@@ -13,8 +13,10 @@ Claude en trabajo que otro modelo hace igual de bien, sin perder calidad.
 ```bash
 git clone https://github.com/flopez1977/skill-router-tareas.git
 cp -r skill-router-tareas/router-tareas ~/.claude/skills/
-~/.claude/skills/router-tareas/scripts/router.sh init
 ```
+
+La primera vez que la uses, Claude te preguntará qué suscripciones tienes (ChatGPT, z.ai, las dos
+o ninguna) y activará solo esos motores. Sin ninguna también funciona: lo hace todo Claude.
 
 Después, una vez: `npm i -g @openai/codex && codex login` (Codex) y la clave de z.ai en
 `ZAI_API_KEY` o en un comando (`ROUTER_GLM_KEY_CMD`) que la saque de tu gestor de contraseñas.
