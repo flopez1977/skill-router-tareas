@@ -11,7 +11,8 @@ Claude en trabajo que otro modelo hace igual de bien, sin perder calidad.
 ## Instalación
 
 ```bash
-git clone <este repo> && cp -r router-tareas ~/.claude/skills/
+git clone https://github.com/flopez1977/skill-router-tareas.git
+cp -r skill-router-tareas/router-tareas ~/.claude/skills/
 ~/.claude/skills/router-tareas/scripts/router.sh init
 ```
 
