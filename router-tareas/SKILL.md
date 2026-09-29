@@ -143,7 +143,9 @@ revisión: va antes de ella.
 - **GLM:** suscripción GLM Coding Plan en z.ai (el plan básico basta para trabajo mecánico) y la
   clave disponible como `ZAI_API_KEY`, o mejor mediante un comando que la saque de tu gestor de
   contraseñas: `export ROUTER_GLM_KEY_CMD='security find-generic-password -s zai -w'` (macOS) —
-  así la clave nunca queda escrita en un fichero ni en el historial.
+  así la clave nunca queda escrita en un fichero ni en el historial. Todavía más seguro, si tu gestor
+  sabe lanzar un programa con un secreto inyectado: `ROUTER_GLM_WRAP='mi-gestor run zai --as ANTHROPIC_AUTH_TOKEN --'`;
+  entonces la clave no pasa ni siquiera por el script, solo llega al proceso de GLM.
 - Requisitos: `git`, `python3`, `perl` y Claude Code.
 
 ## 9. Datos y privacidad

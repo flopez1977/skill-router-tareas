@@ -37,6 +37,9 @@
 #   ZAI_API_KEY          clave de z.ai para GLM, o bien:
 #   ROUTER_GLM_KEY_CMD   comando (lo escribes tú, se ejecuta con `eval`) que imprime la clave, p. ej. la
 #                        orden de tu gestor de contraseñas; la clave solo se pasa al proceso hijo, nunca se imprime
+#   ROUTER_GLM_WRAP      alternativa más segura a las dos anteriores: una orden-prefijo que lanza el proceso de GLM
+#                        con la clave inyectada como ANTHROPIC_AUTH_TOKEN (p. ej. `mi-gestor run clave --as ANTHROPIC_AUTH_TOKEN --`).
+#                        Así la clave no pasa ni por este script. Se separa por espacios (sin comillas dentro).
 #   ROUTER_GLM_MODEL     modelo de GLM (por defecto glm-5.3)
 #   ROUTER_GLM_URL       endpoint compatible con Anthropic (por defecto el de z.ai)
 
@@ -332,7 +335,8 @@ lanzar)
     glm)   command -v claude >/dev/null || die "Claude Code no instalado"
            # La clave se obtiene UNA sola vez y se comprueba que no esté vacía: si fuera vacía, `claude` usaría
            # tus credenciales normales contra el endpoint de un tercero.
-           GLM_KEY="$(clave_glm 2>/dev/null)" && [ -n "$GLM_KEY" ] || die "falta la clave de GLM (o el comando que la da falló): ZAI_API_KEY o ROUTER_GLM_KEY_CMD" ;;
+           if [ -n "${ROUTER_GLM_WRAP:-}" ]; then read -ra GLM_WRAP <<< "$ROUTER_GLM_WRAP"; GLM_KEY=""
+           else GLM_WRAP=(); GLM_KEY="$(clave_glm 2>/dev/null)" && [ -n "$GLM_KEY" ] || die "falta la clave de GLM (o el comando que la da falló): ZAI_API_KEY, ROUTER_GLM_KEY_CMD o ROUTER_GLM_WRAP"; fi ;;
     *)     die "motor sin lanzador en este script: $MOTOR (añádelo en el case de 'lanzar')" ;;
   esac
   T="$TRABAJOS/$ID"; WT="$T/wt"
@@ -362,10 +366,13 @@ lanzar)
       # ejecutores de tests habituales (no `python3`, `node` ni `npx` a secas, que ejecutan cualquier cosa).
       mkdir -p "$T/home"
       ( cd "$WT" && unset ANTHROPIC_API_KEY
-        HOME="$T/home" ANTHROPIC_AUTH_TOKEN="$GLM_KEY" ANTHROPIC_BASE_URL="$GLM_URL" \
+        [ -n "$GLM_KEY" ] && export ANTHROPIC_AUTH_TOKEN="$GLM_KEY"
+        # Con ROUTER_GLM_WRAP, el prefijo (p. ej. tu gestor de contraseñas) corre con tu HOME real y `env`
+        # pasa a un HOME desechable justo antes de `claude`.
+        con_tope "$SEG" ${GLM_WRAP[@]+"${GLM_WRAP[@]}"} env HOME="$T/home" ANTHROPIC_BASE_URL="$GLM_URL" \
         ANTHROPIC_DEFAULT_OPUS_MODEL="$GLM_MODEL" ANTHROPIC_DEFAULT_SONNET_MODEL="$GLM_MODEL" \
         ANTHROPIC_DEFAULT_HAIKU_MODEL="$GLM_MODEL" \
-        con_tope "$SEG" claude -p "$(cat "$T/prompt.md")" --permission-mode acceptEdits \
+        claude -p "$(cat "$T/prompt.md")" --permission-mode acceptEdits \
           --strict-mcp-config --setting-sources project \
           --allowedTools "Read,Edit,Write,Glob,Grep,Bash(python3 -m pytest:*),Bash(pytest:*),Bash(npm test:*),Bash(npm run test:*),Bash(phpunit:*),Bash(php -l:*),Bash(git diff:*),Bash(git status:*)" \
           < /dev/null > "$T/resultado.md" 2> "$T/log.txt" )

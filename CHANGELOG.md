@@ -6,6 +6,7 @@
 - Reactivar un motor reinicia la cuenta de la regla de las 3.
 - **Seguridad:** GLM con `HOME` desechable, sin `python3`/`node`/`npx` libres, clave capturada una sola vez y comprobada; ids de tarea validados (no se puede borrar fuera de la carpeta de trabajos); `lanzar` comprueba todo antes de crear nada; tope de tiempo que mata también a los procesos hijos.
 - **Corregido:** los cambios del motor no se fusionaban (`git merge router/<id>` no hacía nada); Codex se colgaba esperando stdin en segundo plano; fallos silenciosos del motor; `cupo.py` roto por una línea rara y contaba GLM como Claude; ruta de repo inexistente operaba sobre el directorio actual.
+- Opción `ROUTER_GLM_WRAP`: la clave de GLM se inyecta solo en el proceso de GLM desde tu gestor de contraseñas, sin pasar por el script.
 - La tabla de reglas admite listas de motores por orden (mecánica → GLM, y Codex si no hay GLM).
 - **Tarea atómica obligatoria** (`plantillas/tarea-atomica.md`): `lanzar` valida el formato y se niega si
   falta un apartado, hay más de 3 ficheros o no hay caso límite. Nuevo `validar`.
