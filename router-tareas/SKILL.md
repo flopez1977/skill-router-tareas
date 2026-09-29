@@ -1,6 +1,6 @@
 ---
 name: router-tareas
-description: Reparte tareas de código ya definidas de un plan entre Claude, Codex (suscripción de ChatGPT) y GLM (z.ai Coding Plan), cada una en una copia aislada del repo, con Claude revisando siempre el resultado y sacando del reparto al motor que falle tres veces. También mide qué gasta tu límite semanal de Claude y trae una política de qué modelo de Claude usar en cada fase. Úsala cuando haya un plan con varias tareas de código concretas y comprobables y quieras ahorrar el límite de Claude, cuando el usuario diga "reparte las tareas", "pásaselo a Codex", "que lo haga GLM", "usa el router", "router de tareas", "apaga el router", "enciende el router", "segunda opinión de Codex", o cuando pregunte cómo combinar varias suscripciones de IA para programar o cómo no quedarse sin límite semanal. No la uses para tareas pequeñas, sensibles o que necesitan todo el contexto de la conversación.
+description: Reparte tareas de código ya definidas de un plan entre Claude, Codex (suscripción de ChatGPT) y GLM (z.ai Coding Plan), cada una en una copia de trabajo separada del repo, con Claude revisando siempre el resultado y sacando del reparto al motor que falle tres veces. También mide qué gasta tu límite semanal de Claude y trae una política de qué modelo de Claude usar en cada fase. Úsala cuando haya un plan con varias tareas de código concretas y comprobables y quieras ahorrar el límite de Claude, cuando el usuario diga "reparte las tareas", "pásaselo a Codex", "que lo haga GLM", "usa el router", "router de tareas", "apaga el router", "enciende el router", "segunda opinión de Codex", o cuando pregunte cómo combinar varias suscripciones de IA para programar o cómo no quedarse sin límite semanal. No la uses para tareas pequeñas, sensibles o que necesitan todo el contexto de la conversación.
 ---
 
 # Router de tareas: Claude reparte, Codex y GLM ejecutan, Claude revisa
@@ -99,7 +99,7 @@ función, de ~10 minutos, cada una con su criterio de aceptación.
    GLM), acotada y multi-fichero → Codex, difícil → Claude, sensible → Claude. Si usas otro distinto,
    `lanzar` avisa; anota por qué. La tabla vive en `~/.router-tareas/reglas.json` (cada tipo lleva
    una lista de motores por orden de preferencia) y se edita a mano.
-4. **Lanza** en una copia aislada (git worktree, rama `router/<id>`):
+4. **Lanza** en una copia de trabajo separada (git worktree, rama `router/<id>`):
    `$R lanzar codex <repo> <id> tarea.md 30` (el último número es el tope en minutos).
    **Reglas duras que el script no deja saltar:** tarea sensible → no sale; tipo difícil → no
    sale; GLM en una ruta de `ROUTER_NO_GLM` → no sale.

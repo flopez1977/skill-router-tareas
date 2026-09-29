@@ -13,7 +13,7 @@ tiene límite semanal, **medir qué lo gasta de verdad** antes de decidir qué c
 
 | | |
 |---|---|
-| **Reparto seguro** | Tarea atómica con formato obligatorio, tabla de reglas (mecánica → GLM, acotada → Codex, difícil o sensible → Claude), copia aislada, revisión de Claude siempre |
+| **Reparto seguro** | Tarea atómica con formato obligatorio, tabla de reglas (mecánica → GLM, acotada → Codex, difícil o sensible → Claude), copia de trabajo separada, revisión de Claude siempre |
 | **Regla de las 3** | 3 veredictos «mal» en 30 días y el motor sale solo; solo vuelve si tú lo decides |
 | **Tabla final** | `resumen`: al acabar, qué se mandó a cada motor, cuánto tardó y cómo salió la revisión de Claude |
 | **Segunda opinión** | `revisar` y `adversarial`: Codex, sin permiso de escritura, busca fallos que tu modelo no ve |
