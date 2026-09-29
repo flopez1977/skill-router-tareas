@@ -473,6 +473,9 @@ if os.path.exists(reg):
         if x.get("motor") and x.get("resultado") and datetime.datetime.fromisoformat(x["fecha"]) >= desde:
             filas.append(x)
 cel = lambda t: (t or "—").replace("|", "/")
+def corto(t, n=90):   # primera frase, máximo n caracteres: la tabla se lee de un vistazo
+    t = (t or "").split(". ")[0].strip()
+    return (t[: n - 1].rstrip() + "…") if len(t) > n else t
 seg = lambda s: "—" if s is None else (f"{s} s" if s < 120 else f"{s // 60} min")
 print(f"Reparto de las últimas {horas:g} h\n")
 if filas:
@@ -481,7 +484,7 @@ if filas:
     for x in filas:
         v = {"ok": "✅ bien", "mal": "❌ mal", "nulo": "⚪ no llegó a trabajar"}.get(x["resultado"], x["resultado"])
         if x.get("motivo"): v += f": {x['motivo']}"
-        print(f"| {cel(x['id'])} | {x['motor']} | {cel(x.get('objetivo'))} | {cel(x.get('ficheros'))} | {seg(x.get('segundos'))} | {cel(v)} |")
+        print(f"| {cel(x['id'])} | {x['motor']} | {cel(corto(x.get('objetivo')))} | {cel(x.get('ficheros'))} | {seg(x.get('segundos'))} | {cel(v)} |")
     ok = sum(x["resultado"] == "ok" for x in filas); mal = sum(x["resultado"] == "mal" for x in filas)
     print(f"\n{ok} bien · {mal} mal · {len(filas) - ok - mal} sin trabajar · {len(filas)} en total")
 else:

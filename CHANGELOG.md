@@ -1,7 +1,7 @@
 # Cambios
 
 ## 2.0 — 2026-09-29
-- **Tabla final** (`resumen`): al terminar un reparto, qué se mandó a cada motor, cuánto tardó y cómo salió la revisión. El registro guarda objetivo, ficheros y tiempo.
+- **Tabla final** (`resumen`): al terminar un reparto, qué se mandó a cada motor (primera frase del objetivo), cuánto tardó y cómo salió la revisión. El registro guarda objetivo, ficheros y tiempo.
 - **Veredicto `nulo`** (el motor no llegó a trabajar: sin cuenta en la regla de las 3) y `limpiar --forzar`.
 - Reactivar un motor reinicia la cuenta de la regla de las 3.
 - **Seguridad:** GLM con `HOME` desechable, sin `python3`/`node`/`npx` libres, clave capturada una sola vez y comprobada; ids de tarea validados (no se puede borrar fuera de la carpeta de trabajos); `lanzar` comprueba todo antes de crear nada; tope de tiempo que mata también a los procesos hijos.
